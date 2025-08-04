@@ -32,6 +32,16 @@ data "azuredevops_git_repository" "this" {
   # default_branch = "refs/heads/main"
 }
 
+resource "azuredevops_git_repository_file" "this" {
+  repository_id       = data.azuredevops_git_repository.this.id
+  file                = "READMD.md"
+  content             = "test"
+  branch              = "refs/heads/main"
+  commit_message      = "setup commit"
+  overwrite_on_create = false
+}
+
+
 # resource "azuredevops_git_repository" "this" {
 #   project_id = azuredevops_project.this.id
 #   name       = data.azuredevops_git_repository.this.name
@@ -56,6 +66,9 @@ resource "azuredevops_git_repository_branch" "this" {
   repository_id = data.azuredevops_git_repository.this.id
   name          = "develop"
   ref_branch    = data.azuredevops_git_repository.this.default_branch
+  depends_on = [
+    azuredevops_git_repository_file.this
+  ]
 }
 
 
