@@ -68,14 +68,12 @@ resource "azuredevops_git_repository" "this" {
   }
 }
 
-# resource "azuredevops_git_repository_branch" "this" {
-#   repository_id = data.azuredevops_git_repository.this.id
-#   name          = "develop"
-#   ref_branch    = data.azuredevops_git_repository.this.default_branch
-#   depends_on = [
-#     azuredevops_git_repository_file.this
-#   ]
-# }
+resource "azuredevops_git_repository_branch" "this" {
+  for_each      = toset(var.environments)
+  repository_id = azuredevops_git_repository.this.id
+  name          = each.key
+  ref_branch    = azuredevops_git_repository.this.default_branch
+}
 
 
 # resource "azuredevops_project" "this" {
