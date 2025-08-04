@@ -33,10 +33,10 @@ data "azuredevops_git_repository" "this" {
 }
 
 resource "azuredevops_git_repository_file" "this" {
-  repository_id       = data.azuredevops_git_repository.this.id
-  file                = "READMD.md"
-  content             = "test"
-  branch              = "refs/heads/main"
+  repository_id = data.azuredevops_git_repository.this.id
+  file          = "READMD.md"
+  content       = "test"
+  # branch              = "refs/heads/main"
   commit_message      = "setup commit"
   overwrite_on_create = false
 }
