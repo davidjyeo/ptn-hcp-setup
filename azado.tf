@@ -26,10 +26,10 @@ resource "azuredevops_variable_group" "this" {
   }
 }
 
-# data "azuredevops_git_repository" "this" {
-#   project_id = azuredevops_project.this.id
-#   name       = azuredevops_project.this.name
-# }
+data "azuredevops_git_repository" "this" {
+  project_id = azuredevops_project.this.id
+  name       = azuredevops_project.this.name
+}
 
 # output "repo" {
 #   value = azuredevops_project.this
