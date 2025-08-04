@@ -6,10 +6,12 @@ resource "azuredevops_project" "this" {
   version_control    = "Git"
   work_item_template = "Agile"
   description        = "Managed by Terraform"
-  # features = {
-  #   testplans = "disabled"
-  #   artifacts = "disabled"
-  # }
+  features = {
+    testplans    = "disabled"
+    artifacts    = "disabled"
+    repositories = "disabled"
+
+  }
 }
 
 resource "azuredevops_variable_group" "this" {
@@ -52,19 +54,19 @@ resource "azuredevops_git_repository" "this" {
   # default_branch = "refs/heads/main"
   initialization {
     # init_type   = "Import"
-    init_type = "Uninitialized"
+    init_type = "Clean"
     # source_type = "Git"
     # source_url  = data.azuredevops_git_repository.this.remote_url
     # source_url  = data.azuredevops_git_repository.this.url
   }
-  # lifecycle {
-  #   ignore_changes = [
-  #     # Ignore changes to initialization to support importing existing repositories
-  #     # Given that a repo now exists, either imported into terraform state or created by terraform,
-  #     # we don't care for the configuration of initialization against the existing resource
-  #     initialization,
-  #   ]
-  # }
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to initialization to support importing existing repositories
+      # Given that a repo now exists, either imported into terraform state or created by terraform,
+      # we don't care for the configuration of initialization against the existing resource
+      initialization,
+    ]
+  }
 }
 
 # resource "azuredevops_git_repository_branch" "this" {
