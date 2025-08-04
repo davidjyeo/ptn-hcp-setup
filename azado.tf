@@ -27,16 +27,17 @@ resource "azuredevops_variable_group" "this" {
 }
 
 data "azuredevops_git_repository" "this" {
-  project_id = azuredevops_project.this.id
-  name       = "plat-fs"
+  project_id     = azuredevops_project.this.id
+  name           = "plat-fs"
+  default_branch = "refs/heads/main"
 }
 
 # terraform import azuredevops_git_repository.example projectName/00000000-0000-0000-0000-000000000000
 
-import {
-  id = "${azuredevops_project.this.name}/${data.azuredevops_git_repository.this.name}"
-  to = azuredevops_git_repository.this
-}
+# import {
+#   id = "${azuredevops_project.this.name}/${data.azuredevops_git_repository.this.name}"
+#   to = azuredevops_git_repository.this
+# }
 
 # output "sasasas" {
 #   value = data.azuredevops_git_repository.this
@@ -45,7 +46,7 @@ import {
 
 resource "azuredevops_git_repository" "this" {
   project_id = azuredevops_project.this.id
-  name       = data.azuredevops_git_repository.this.name
+  name       = null #data.azuredevops_git_repository.this.name
   initialization {
     init_type = "Clean"
   }
