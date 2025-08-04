@@ -1,15 +1,3 @@
-
-# tfc_token    = ""
-# workspace_name           = "plat-fs"
-# tfc_project_name         = var.tfc_project_name
-# tfc_project_id           = var.tfc_project_id
-# suffix                   = var.suffix
-# terraform_version        = "latest"
-# arm_subscription_id_dev  = "null"
-# arm_subscription_id_prod = "null"
-
-
-
 // Azure DevOps Resources
 resource "azuredevops_project" "this" {
   # name               = tfe_workspace.this.name
@@ -24,7 +12,6 @@ resource "azuredevops_project" "this" {
   # }
 }
 
-# # # // create 
 resource "azuredevops_variable_group" "this" {
   for_each     = toset(var.environments)
   project_id   = azuredevops_project.this.id
@@ -38,6 +25,19 @@ resource "azuredevops_variable_group" "this" {
     # is_secret = true
   }
 }
+
+data "azuredevops_git_repository" "this" {
+  project_id = data.azuredevops_project.this.id
+  name       = "var.project_name"
+}
+
+# resource "azuredevops_git_repository" "example" {
+#   project_id = azuredevops_project.example.id
+#   name       = "Example Git Repository"
+#   initialization {
+#     init_type = "Clean"
+#   }
+# }
 
 
 # resource "azuredevops_project" "this" {
