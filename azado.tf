@@ -27,7 +27,7 @@ resource "azuredevops_variable_group" "this" {
 }
 
 data "azuredevops_git_repository" "this" {
-  project_id = data.azuredevops_project.this.id
+  project_id = azuredevops_project.this.id
   name       = "var.project_name"
 }
 
