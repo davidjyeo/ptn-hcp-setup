@@ -33,9 +33,9 @@ data "azuredevops_git_repository" "this" {
 }
 
 resource "azuredevops_git_repository" "this" {
-  project_id     = azuredevops_project.this.id
-  name           = data.azuredevops_git_repository.this.name
-  default_branch = "refs/heads/main"
+  project_id = azuredevops_project.this.id
+  name       = data.azuredevops_git_repository.this.name
+  # default_branch = "refs/heads/main"
   initialization {
     init_type   = "Import"
     source_type = "Git"
