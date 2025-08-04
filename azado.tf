@@ -1,0 +1,242 @@
+
+# tfc_token    = ""
+# workspace_name           = "plat-fs"
+# tfc_project_name         = var.tfc_project_name
+# tfc_project_id           = var.tfc_project_id
+# suffix                   = var.suffix
+# terraform_version        = "latest"
+# arm_subscription_id_dev  = "null"
+# arm_subscription_id_prod = "null"
+
+
+
+// Azure DevOps Resources
+resource "azuredevops_project" "this" {
+  # name               = tfe_workspace.this.name
+  name               = var.project_name
+  visibility         = "private"
+  version_control    = "Git"
+  work_item_template = "Agile"
+  description        = "Managed by Terraform"
+  # features = {
+  #   testplans = "disabled"
+  #   artifacts = "disabled"
+  # }
+}
+
+# # # // create 
+# # resource "azuredevops_variable_group" "this" {
+# #   project_id   = azuredevops_project.this.id
+# #   name         = var.workspace_name
+# #   description  = "Variables for ${var.workspace_name}."
+# #   allow_access = true
+
+# #   variable {
+# #     name  = "TF_TOKEN"
+# #     value = "null" #tfe_team_token.this.token
+# #     # is_secret = true
+# #   }
+# # }
+
+
+# resource "azuredevops_project" "this" {
+#   name               = tfe_workspace.this.name
+#   visibility         = "private"
+#   version_control    = "Git"
+#   work_item_template = "Agile"
+#   description        = "Managed by Terraform"
+#   features = {
+#     boards    = "disabled"
+#     testplans = "disabled"
+#     artifacts = "disabled"
+#   }
+# }
+
+# # data "azuredevops_agent_pool" "this" {
+# #   name = "msamlin-selfhosted"
+# # }
+
+# # resource "azuredevops_agent_queue" "this" {
+# #   project_id    = azuredevops_project.this.id
+# #   agent_pool_id = data.azuredevops_agent_pool.this.id
+# # }
+
+# # resource "azuredevops_resource_authorization" "this" {
+# #   project_id  = azuredevops_project.this.id
+# #   resource_id = data.azuredevops_agent_pool.this.id
+# #   type        = "queue"
+# #   authorized  = true
+# # }
+
+# # data "azuredevops_team" "this" {
+# #   project_id = azuredevops_project.this.id
+# #   name       = "${tfe_workspace.this.name} Team"
+# # }
+
+# # data "azuredevops_group" "this" {
+# #   project_id = azuredevops_project.this.id
+# #   name       = "${tfe_workspace.this.name} Team"
+# # }
+
+# # resource "azuredevops_team_members" "this" {
+# #   project_id = azuredevops_project.this.id
+# #   team_id    = data.azuredevops_team.this.id
+# #   # mode       = "overwrite"
+# #   members = [
+# #   ]
+# # }
+
+# // Create a git repository in ADO for the workspace
+# resource "azuredevops_git_repository" "this" {
+#   project_id     = azuredevops_project.this.id
+#   name           = "${tfe_workspace.this.name}-infrastructure"
+#   default_branch = "refs/heads/main"
+#   initialization {
+#     init_type = "Clean"
+#   }
+# }
+
+# // Create a git repository file in ADO for the workspace
+# resource "azuredevops_git_repository_file" "this" {
+#   repository_id = azuredevops_git_repository.this.id
+#   file          = ".pipelines/azure-pipelines.yml"
+
+#   content             = <<-EOT
+#     trigger: none
+#     # - main
+
+#     pool: msamlin-selfhosted
+
+#     variables:
+#       terraformVersion: "latest"
+#       terraformWorkingDirectory: "$(Build.SourcesDirectory)/terraform"
+
+#     stages:
+#       - stage: "tfc_plan"
+#         variables:
+#         - group: "${azuredevops_variable_group.this.name}"
+#         displayName: HCP Terraform - Plan
+#         jobs:
+#           - job: planTerraform
+#             displayName: Plan Terraform
+#             steps:
+#               - task: TerraformInstaller@2
+#                 displayName: "Terraform Install - Latest"
+#                 inputs:
+#                   terraformVersion: "$(terraformVersion)"
+
+#               - task: Bash@3
+#                 displayName: "Terraform Plan"
+#                 inputs:
+#                   targetType: "inline"
+#                   script: |
+#                     echo ""
+#                     echo "####################"
+#                     echo "## Terraform Plan ##"
+#                     echo "####################"
+#                     echo ""
+
+#                     export TF_TOKEN_app_terraform_io="$(TF_TOKEN)"
+#                     terraform init -input=false -upgrade
+#                     terraform plan
+#                   workingDirectory: "$(terraformWorkingDirectory)"
+
+#       - stage: "tfc_deploy"
+#         variables:
+#           - group: "${azuredevops_variable_group.this.name}"
+#         displayName: Deploy
+#         jobs:
+#           - deployment: deployTerraform
+#             displayName: HCP Terraform - Apply
+#             environment: hcp_terraform
+#             strategy:
+#               runOnce:
+#                 deploy:
+#                   steps:
+#                     - task: TerraformInstaller@2
+#                       displayName: "Terraform Install - Latest"
+#                       inputs:
+#                         terraformVersion: "$(terraformVersion)"
+
+#                     - task: Bash@3
+#                       displayName: "Terraform Init"
+#                       inputs:
+#                         targetType: "inline"
+#                         script: |
+#                           echo ""
+#                           echo "####################"
+#                           echo "## Terraform Init ##"
+#                           echo "####################"
+#                           echo ""
+
+#                           export TF_TOKEN_app_terraform_io="$(TF_TOKEN)"
+#                           terraform init -input=false -upgrade
+#                           terraform apply --auto-approve
+#                         workingDirectory: "$(terraformWorkingDirectory)"
+#   EOT
+#   branch              = azuredevops_git_repository.this.default_branch
+#   overwrite_on_create = false
+# }
+
+# // Create a provider.tf file in ADO for the workspace
+# resource "azuredevops_git_repository_file" "tf_provider" {
+#   repository_id = azuredevops_git_repository.this.id
+#   file          = "terraform/provider.tf"
+
+#   content = <<-EOT
+#     terraform {
+#       required_providers {
+#         azurerm = {
+#           source = "hashicorp/azurerm"
+#         }
+#         azapi = {
+#           source = "azure/azapi"
+#         }
+#         random = {
+#           source = "hashicorp/random"
+#         }
+#       }
+
+#       backend "remote" {
+#         organization = "MSAmlin"
+#         workspaces {
+#           name = "${tfe_workspace.this.name}"
+#         }
+#       }
+#     }
+
+#     provider "azurerm" {
+#       features {
+#         virtual_machine {
+#           delete_os_disk_on_deletion     = true
+#           skip_shutdown_and_force_delete = true
+#         }
+#         resource_group {
+#           prevent_deletion_if_contains_resources = true
+#         }
+#       }
+#       storage_use_azuread = true
+#     }
+
+#     provider "azapi" {}
+
+#     data "azurerm_subscription" "this" {}
+#     data "azurerm_client_config" "this" {}
+#   EOT
+
+#   branch              = azuredevops_git_repository.this.default_branch
+#   overwrite_on_create = false
+# }
+
+# // Create a variable group for the workspace
+# resource "azuredevops_variable_group" "this" {
+#   project_id   = azuredevops_project.this.id
+#   name         = "${var.workspace_name}-${var.suffix}"
+#   description  = "Variables for ${var.workspace_name}-${var.suffix}."
+#   allow_access = true
+
+#   variable {
+#     name  = "TF_TOKEN"
+#     value = tfe_team_token.this.token
+#   }
+# }
