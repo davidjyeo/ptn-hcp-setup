@@ -29,7 +29,7 @@ resource "azuredevops_variable_group" "this" {
   for_each     = toset(var.environments)
   project_id   = azuredevops_project.this.id
   name         = each.key
-  description  = "Variables for ${var.project_name}-${each.key}."
+  description  = "Variables for Project ${var.project_name}, Environment ${each.key}."
   allow_access = true
 
   variable {
