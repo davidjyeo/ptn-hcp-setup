@@ -39,7 +39,8 @@ resource "azuredevops_git_repository" "this" {
   initialization {
     init_type   = "Import"
     source_type = "Git"
-    source_url  = data.azuredevops_git_repository.this.url
+    source_url  = data.azuredevops_git_repository.this.remote_url
+    # source_url  = data.azuredevops_git_repository.this.url
   }
   lifecycle {
     ignore_changes = [
