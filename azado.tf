@@ -26,14 +26,14 @@ resource "azuredevops_variable_group" "this" {
   }
 }
 
-data "azuredevops_git_repository" "this" {
-  project_id = azuredevops_project.this.id
-  name       = azuredevops_project.this.name
-}
+# data "azuredevops_git_repository" "this" {
+#   project_id = azuredevops_project.this.id
+#   name       = azuredevops_project.this.name
+# }
 
-output "repo" {
-  value = azuredevops_project.this
-}
+# output "repo" {
+#   value = azuredevops_project.this
+# }
 
 
 # resource "azuredevops_git_repository_file" "this" {
@@ -46,25 +46,26 @@ output "repo" {
 # }
 
 
-# resource "azuredevops_git_repository" "this" {
-#   project_id = azuredevops_project.this.id
-#   name       = data.azuredevops_git_repository.this.name
-#   # default_branch = "refs/heads/main"
-#   initialization {
-#     init_type   = "Import"
-#     source_type = "Git"
-#     source_url  = data.azuredevops_git_repository.this.remote_url
-#     # source_url  = data.azuredevops_git_repository.this.url
-#   }
-#   lifecycle {
-#     ignore_changes = [
-#       # Ignore changes to initialization to support importing existing repositories
-#       # Given that a repo now exists, either imported into terraform state or created by terraform,
-#       # we don't care for the configuration of initialization against the existing resource
-#       initialization,
-#     ]
-#   }
-# }
+resource "azuredevops_git_repository" "this" {
+  project_id = azuredevops_project.this.id
+  name       = data.azuredevops_git_repository.this.name
+  # default_branch = "refs/heads/main"
+  initialization {
+    # init_type   = "Import"
+    init_type = "Uninitialized"
+    # source_type = "Git"
+    # source_url  = data.azuredevops_git_repository.this.remote_url
+    # source_url  = data.azuredevops_git_repository.this.url
+  }
+  # lifecycle {
+  #   ignore_changes = [
+  #     # Ignore changes to initialization to support importing existing repositories
+  #     # Given that a repo now exists, either imported into terraform state or created by terraform,
+  #     # we don't care for the configuration of initialization against the existing resource
+  #     initialization,
+  #   ]
+  # }
+}
 
 # resource "azuredevops_git_repository_branch" "this" {
 #   repository_id = data.azuredevops_git_repository.this.id
