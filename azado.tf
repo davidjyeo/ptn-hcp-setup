@@ -32,7 +32,7 @@ data "azuredevops_git_repository" "this" {
 }
 
 output "repo" {
-  value = data.azuredevops_git_repository.this
+  value = azuredevops_project.this
 }
 
 
