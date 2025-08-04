@@ -28,7 +28,7 @@ resource "azuredevops_variable_group" "this" {
 
 data "azuredevops_git_repository" "this" {
   project_id = azuredevops_project.this.id
-  name       = "var.project_name"
+  name       = "plat-fs"
 }
 
 # resource "azuredevops_git_repository" "example" {
