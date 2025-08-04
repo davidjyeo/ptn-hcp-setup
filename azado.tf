@@ -45,13 +45,20 @@ data "azuredevops_git_repository" "this" {
 
 
 resource "azuredevops_git_repository" "this" {
-  project_id = azuredevops_project.this.id
-  name       = data.azuredevops_git_repository.this.name
+  project_id     = azuredevops_project.this.id
+  name           = data.azuredevops_git_repository.this.name
+  default_branch = "refs/heads/main"
   initialization {
     init_type = "Clean"
   }
-
-  # depends_on = [  ]
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to initialization to support importing existing repositories
+      # Given that a repo now exists, either imported into terraform state or created by terraform,
+      # we don't care for the configuration of initialization against the existing resource
+      initialization,
+    ]
+  }
 }
 
 
