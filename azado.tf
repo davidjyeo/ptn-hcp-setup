@@ -27,9 +27,9 @@ resource "azuredevops_variable_group" "this" {
 }
 
 data "azuredevops_git_repository" "this" {
-  project_id     = azuredevops_project.this.id
-  name           = "plat-fs"
-  default_branch = "refs/heads/main"
+  project_id = azuredevops_project.this.id
+  name       = "plat-fs"
+  # default_branch = "refs/heads/main"
 }
 
 # terraform import azuredevops_git_repository.example projectName/00000000-0000-0000-0000-000000000000
