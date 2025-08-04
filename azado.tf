@@ -29,17 +29,21 @@ resource "azuredevops_variable_group" "this" {
 data "azuredevops_git_repository" "this" {
   project_id = azuredevops_project.this.id
   name       = azuredevops_project.this.name
-  # default_branch = "refs/heads/main"
 }
 
-resource "azuredevops_git_repository_file" "this" {
-  repository_id       = data.azuredevops_git_repository.this.id
-  file                = "READMD.md"
-  content             = "test"
-  branch              = data.azuredevops_git_repository.this.default_branch
-  commit_message      = "setup commit"
-  overwrite_on_create = false
+output "repo" {
+  value = data.azuredevops_git_repository.this
 }
+
+
+# resource "azuredevops_git_repository_file" "this" {
+#   repository_id       = data.azuredevops_git_repository.this.id
+#   file                = "READMD.md"
+#   content             = "test"
+#   branch              = data.azuredevops_git_repository.this.default_branch
+#   commit_message      = "setup commit"
+#   overwrite_on_create = false
+# }
 
 
 # resource "azuredevops_git_repository" "this" {
