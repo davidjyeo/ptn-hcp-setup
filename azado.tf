@@ -31,9 +31,16 @@ data "azuredevops_git_repository" "this" {
   name       = "plat-fs"
 }
 
-output "sasasas" {
-  value = data.azuredevops_git_repository.this
+# terraform import azuredevops_git_repository.example projectName/00000000-0000-0000-0000-000000000000
+
+import {
+  id = "${azuredevops_project.this.name}/${data.azuredevops_git_repository.this.name}"
+  to = azuredevops_git_repository.this
 }
+
+# output "sasasas" {
+#   value = data.azuredevops_git_repository.this
+# }
 
 
 resource "azuredevops_git_repository" "this" {
@@ -42,6 +49,8 @@ resource "azuredevops_git_repository" "this" {
   initialization {
     init_type = "Clean"
   }
+
+  # depends_on = [  ]
 }
 
 
