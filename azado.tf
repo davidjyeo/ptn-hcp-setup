@@ -25,18 +25,19 @@ resource "azuredevops_project" "this" {
 }
 
 # # # // create 
-# # resource "azuredevops_variable_group" "this" {
-# #   project_id   = azuredevops_project.this.id
-# #   name         = var.workspace_name
-# #   description  = "Variables for ${var.workspace_name}."
-# #   allow_access = true
+resource "azuredevops_variable_group" "this" {
+  for_each     = toset(var.environments)
+  project_id   = azuredevops_project.this.id
+  name         = each.key
+  description  = "Variables for ${var.project_name}-${each.key}."
+  allow_access = true
 
-# #   variable {
-# #     name  = "TF_TOKEN"
-# #     value = "null" #tfe_team_token.this.token
-# #     # is_secret = true
-# #   }
-# # }
+  variable {
+    name  = "TF_TOKEN"
+    value = "null" #tfe_team_token.this.token
+    # is_secret = true
+  }
+}
 
 
 # resource "azuredevops_project" "this" {
