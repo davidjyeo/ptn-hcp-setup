@@ -49,8 +49,8 @@ resource "azuredevops_git_repository" "this" {
   name           = data.azuredevops_git_repository.this.name
   default_branch = "refs/heads/main"
   initialization {
-    init_type   = "import"
-    source_type = "git"
+    init_type   = "Import"
+    source_type = "Git"
     source_url  = data.azuredevops_git_repository.this.url
   }
   lifecycle {
