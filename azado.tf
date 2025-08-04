@@ -31,13 +31,18 @@ data "azuredevops_git_repository" "this" {
   name       = "plat-fs"
 }
 
-# resource "azuredevops_git_repository" "example" {
-#   project_id = azuredevops_project.example.id
-#   name       = "Example Git Repository"
-#   initialization {
-#     init_type = "Clean"
-#   }
-# }
+output "sasasas" {
+  value = data.azuredevops_git_repository.this
+}
+
+
+resource "azuredevops_git_repository" "this" {
+  project_id = azuredevops_project.this.id
+  name       = data.azuredevops_git_repository.this.name
+  initialization {
+    init_type = "Clean"
+  }
+}
 
 
 # resource "azuredevops_project" "this" {
