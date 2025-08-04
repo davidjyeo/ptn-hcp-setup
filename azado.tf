@@ -9,8 +9,7 @@ resource "azuredevops_project" "this" {
   features = {
     testplans    = "disabled"
     artifacts    = "disabled"
-    repositories = "disabled"
-
+    repositories = "enabled"
   }
 }
 
@@ -50,11 +49,11 @@ data "azuredevops_git_repository" "this" {
 
 resource "azuredevops_git_repository" "this" {
   project_id = azuredevops_project.this.id
-  name       = data.azuredevops_git_repository.this.name
+  name       = "end-to-end" #data.azuredevops_git_repository.this.name
   # default_branch = "refs/heads/main"
   initialization {
-    # init_type   = "Import"
     init_type = "Clean"
+    # init_type   = "Import"
     # source_type = "Git"
     # source_url  = data.azuredevops_git_repository.this.remote_url
     # source_url  = data.azuredevops_git_repository.this.url
