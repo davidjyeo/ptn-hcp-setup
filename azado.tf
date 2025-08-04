@@ -2,7 +2,7 @@
 resource "azuredevops_project" "this" {
   # name               = tfe_workspace.this.name
   name               = var.project_name
-  visibility         = "private"
+  visibility         = "public"
   version_control    = "Git"
   work_item_template = "Agile"
   description        = "Managed by Terraform"
@@ -31,18 +31,6 @@ data "azuredevops_git_repository" "this" {
   name       = "plat-fs"
   # default_branch = "refs/heads/main"
 }
-
-# terraform import azuredevops_git_repository.example projectName/00000000-0000-0000-0000-000000000000
-
-# import {
-#   id = "${azuredevops_project.this.name}/${data.azuredevops_git_repository.this.name}"
-#   to = azuredevops_git_repository.this
-# }
-
-# output "sasasas" {
-#   value = data.azuredevops_git_repository.this
-# }
-
 
 resource "azuredevops_git_repository" "this" {
   project_id     = azuredevops_project.this.id
