@@ -46,7 +46,7 @@ data "azuredevops_git_repository" "this" {
 
 resource "azuredevops_git_repository" "this" {
   project_id = azuredevops_project.this.id
-  name       = null #data.azuredevops_git_repository.this.name
+  name       = data.azuredevops_git_repository.this.name
   initialization {
     init_type = "Clean"
   }
